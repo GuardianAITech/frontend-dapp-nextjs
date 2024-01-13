@@ -9,6 +9,9 @@ export default function Home() {
   const dateRange = "14 Jan, 2023 – 20 Jan, 2023";
   const totalTx = "54,081";
   const realtimeTx = "840";
+  const nativeBalance = "$100,000.00";
+  const assetBalance = "$60,000.00";
+  const atRiskBalance = "$34,000.00";
 
   return (
     <main className="flex flex-col gap-5 mt-5 md:flex-row">
@@ -21,6 +24,27 @@ export default function Home() {
           </div>
         </div>
         <div className='flex justify-start'>
+        <div className="flex items-start mr-12 gap-5">
+            <div className="flex flex-col items-center gap-2">
+            <span className="text-sm text-gray-400 mb-1">Native Balance</span>
+              <span className="text-2xl text-blue-500 font-bold">{nativeBalance}</span>
+            </div>
+            <Image src="/images/totaltx.png" width={100} height={50} alt="Total Tx" />
+          </div>
+          <div className="flex items-start mr-12 gap-5">
+            <div className="flex flex-col items-center gap-2">
+            <span className="text-sm text-gray-400 mb-1">Asset Balance</span>
+              <span className="text-2xl text-blue-500 font-bold">{assetBalance}</span>
+            </div>
+            <Image src="/images/totaltx.png" width={100} height={50} alt="Total Tx" />
+          </div>
+          <div className="flex items-start mr-12 gap-5">
+            <div className="flex flex-col items-center gap-2">
+            <span className="text-sm text-gray-400 mb-1">Total at Risk</span>
+              <span className="text-2xl text-blue-500 font-bold">{atRiskBalance}</span>
+            </div>
+            <Image src="/images/totaltx.png" width={100} height={50} alt="Total Tx" />
+          </div>
           <div className="flex items-start mr-12 gap-5">
             <div className="flex flex-col items-center gap-2">
             <span className="text-sm text-gray-400 mb-1">Total Tx</span>
