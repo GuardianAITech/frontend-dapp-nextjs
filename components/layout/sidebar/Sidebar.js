@@ -10,7 +10,7 @@ const Sidebar = () => {
             <Image src="/images/SHEILD.png" alt="logo" width={100} height={100} className='object-cover rounded-full' />
                 <div className='flex flex-col'>
                     <span className='font-medium'>GUARDIAN AI</span>
-                    <span className='text-xs text-softText'>DASHBOARD</span>
+                    <span className='text-xs'>DASHBOARD</span>
                 </div>
             </div>
             <ul>
