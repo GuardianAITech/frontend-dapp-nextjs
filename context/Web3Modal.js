@@ -1,11 +1,17 @@
 "use client";
 
-import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react'
+import { createWeb3Modal, defaultConfig } from '@web3modal/ethers/react'
 
-import { WagmiConfig } from 'wagmi'
-import { arbitrum, mainnet } from 'viem/chains'
 
 const projectId = 'd3bb3c494bb32f237e0af7df0632bdf5'
+
+const mainnet = {
+  chainId: 1,
+  name: 'Ethereum',
+  currency: 'ETH',
+  explorerUrl: 'https://etherscan.io',
+  rpcUrl: 'https://cloudflare-eth.com'
+}
 
 const metadata = {
   name: 'GuardianAI',
@@ -14,11 +20,12 @@ const metadata = {
   icons: ['https://avatars.githubusercontent.com/u/37784886']
 }
 
-const chains = [mainnet, arbitrum]
-const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata })
+createWeb3Modal({
+  ethersConfig: defaultConfig({ metadata }),
+  chains: [mainnet],
+  projectId
+})
 
-createWeb3Modal({ wagmiConfig, projectId, chains })
-
-export function Web3Modal({ children }) {
-  return <WagmiConfig config={wagmiConfig}>{children}</WagmiConfig>;
+export function Web3ModalProvider({ children }) {
+  return children;
 }
