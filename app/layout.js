@@ -3,7 +3,7 @@ import Navbar from '@/components/layout/Navbar';
 import Sidebar from '@/components/layout/sidebar/Sidebar';
 import Footer from '@/components/layout/Footer';
 import SidebarMobile from '@/components/layout/sidebar/SidebarMobile';
-import { Web3Modal } from "../context/Web3Modal";
+import { Web3Modal, Web3ModalProvider } from "../context/Web3Modal";
 
 
 export const metadata = {
@@ -25,7 +25,7 @@ export default function RootLayout({ children }) {
           </div>
           <div className='flex-[6] xl:flex-[5] p-4 lg:p-5'>
             <Navbar/>
-            <Web3Modal>{children}</Web3Modal>
+            <Web3ModalProvider>{children}</Web3ModalProvider>
             <Footer/>
             <div className='fixed bottom-0 z-30 w-full softBg md:hidden '>
               <SidebarMobile/>

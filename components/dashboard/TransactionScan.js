@@ -8,10 +8,12 @@ const TransactionScan = ({ scanData }) => {
   }
   const latestTransactions = scanData.latest_transactions.slice(1, 11);
 
+  const isMobile = window.innerWidth <= 768;
+
   return (
-    <div className='h-auto softBg p-5 rounded-lg'>
-      <h2 className='mb-5 font-light regular-text text-center text-2xl text-white'>Recent Transactions</h2>
-      <div className="overflow-auto max-h-96">
+    <div className='softBg p-5 rounded-lg'>
+      <h2 className='mb-5 font-light regular-text text-center text-2xl text-white'>Latest Transactions</h2>
+      <div className="overflow-auto">
         <div className="grid grid-cols-12 gap-4 font-medium text-lg text-white mb-1 items-center text-center p-2">
           <div className="col-span-3">TxHash</div>
           <div className="col-span-3">To</div>
@@ -31,7 +33,7 @@ const TransactionScan = ({ scanData }) => {
                 className="hover:text-blue-300"
                 title={tx.tx_hash}
               >
-                {`${tx.tx_hash.substring(0, 10)}...${tx.tx_hash.substring(tx.tx_hash.length - 10)}`}
+                {isMobile ? `${tx.tx_hash.substring(0, 1)}...${tx.tx_hash.substring(tx.tx_hash.length - 4)}` : `${tx.tx_hash.substring(0, 10)}...${tx.tx_hash.substring(tx.tx_hash.length - 10)}`}
               </a>
             </div>
             <div className="col-span-3 truncate flex items-center justify-center">
@@ -42,7 +44,7 @@ const TransactionScan = ({ scanData }) => {
                 className="hover:text-blue-300"
                 title={tx.to_address}
               >
-                {`${tx.to_address.substring(0, 10)}...${tx.to_address.substring(tx.to_address.length - 10)}`}
+                {isMobile ? `${tx.to_address.substring(0, 1)}...${tx.to_address.substring(tx.to_address.length - 4)}` : `${tx.to_address.substring(0, 10)}...${tx.to_address.substring(tx.to_address.length - 10)}`}
               </a>
             </div>
             <div className="col-span-3 flex items-center justify-center">

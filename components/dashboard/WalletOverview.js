@@ -1,6 +1,6 @@
 "use client"
 import React from 'react';
-import { FaCheckCircle, FaTrashAlt, FaBan, FaHistory, FaClock,  } from 'react-icons/fa';
+import { FaCheckCircle, FaTrashAlt, FaBan, FaHistory, FaClock } from 'react-icons/fa';
 
 const WalletOverview = ({ scanData }) => {
   const totalApprovals = scanData?.approvals?.items?.length || 0;
@@ -11,7 +11,7 @@ const WalletOverview = ({ scanData }) => {
   const lastActivityDate = scanData?.last_activity?.sentence || 'N/A';
 
   const DataBox = ({ IconComponent, label, data }) => (
-    <div className="flex flex-col items-center justify-center gap-4 p-4 border border-white bg-gray-800 text-center rounded-lg w-72 h-48">
+    <div className="flex flex-col items-center justify-center gap-4 p-2 border border-white bg-gray-800 text-center rounded-lg w-36 h-48 md:w-48 md:h-48 lg:w-72 lg:h-48">
       <IconComponent size="24" />
       <span className="text-xl mt-1 regular-text">{label}</span>
       <span className="font-light regular-text">{data}</span>
@@ -19,7 +19,7 @@ const WalletOverview = ({ scanData }) => {
   );
 
   return (
-    <div className='h-[450px]  softBg p-5 rounded-lg'>
+    <div className='softBg p-5 rounded-lg'>
       <h2 className='mb-5 font-light regular-text text-center text-2xl'>Wallet Scan Overview</h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 text-gray-200 items-center justify-items-center">
         <DataBox IconComponent={FaCheckCircle} label="Approvals" data={totalApprovals} />
@@ -33,3 +33,5 @@ const WalletOverview = ({ scanData }) => {
 };
 
 export default WalletOverview;
+
+

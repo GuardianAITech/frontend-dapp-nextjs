@@ -14,6 +14,10 @@ const QuickScan = () => {
     const [scanData, setScanData] = useState(null);
     const [balances, setBalances] = useState({ nativeBalance: 0, assetBalance: 0, totalTx: 0 , atRiskBalance: 0});
 
+    const onStartScanClick = () => {
+      console.log('Start Scan clicked');
+    };
+
     const today = new Date();
     const ninetyDaysAgo = new Date();
     ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
@@ -24,7 +28,7 @@ const QuickScan = () => {
     }
 
     const dateRange = `${formatDate(ninetyDaysAgo)} – ${formatDate(today)}`;
-    
+
     useEffect(() => {
         const fetchData = async () => {
             if (isConnected && address) {
@@ -57,68 +61,106 @@ const QuickScan = () => {
         fetchData();
     }, [isConnected, address]);
 
-    const onStartScanClick = () => {
-      console.log('Start Scan clicked');
-    };
-
-  return (
-      <>
+    if (!isConnected) {
+      return (
         <div className="flex flex-col gap-5 flex-[3] md:w-4/4 xl:w-5/5">
-          <div className='flex justify-start items-center mb-5 gap-10'>
-            <h1 className="text-5xl font-light regular-text text-white">Quick Scan</h1>
-            <div className="flex-grow">
-                <div className="flex justify-end items-center gap-12 pl-4">
-                    <img src="/images/logo.webp" alt="Guardian AI Logo" className="h-20" />
-                    <w3m-button className="text-[#00D2FF]"></w3m-button>
-                </div>
+          <div className='flex flex-col md:flex-row justify-between items-center mb-5 gap-4 md:gap-10'>
+            <h1 className="text-3xl md:text-5xl font-light regular-text text-white">Quick Scan</h1>
+            <div className="flex items-center gap-4 md:gap-12">
+              <img src="/images/logo.webp" alt="Guardian AI Logo" className="h-16 md:h-20" />
+              <w3m-button className="text-[#00D2FF]"></w3m-button>
             </div>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 bg-[#20202c] p-2" style={{ borderRadius: '15px' }}>
-              <MdSearch size={20} className="text-[#8692A6]" />
-              <input type="text" placeholder="Scan by Address" className="bg-transparent border-none text-[#8692A6] placeholder-[#8692A6]" />
+          <div className="flex flex-col items-center gap-4 md:flex-row md:justify-start md:items-center">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 bg-[#20202c] p-2 rounded-lg">
+                <MdSearch size={20} className="text-[#8692A6]" />
+                <input type="text" placeholder="Scan by Address" className="bg-transparent border-none text-[#8692A6] placeholder-[#8692A6]" />
+              </div>
+              <button onClick={onStartScanClick} className="bg-[#00D2FF] text-white px-4 py-2 rounded-lg">
+                Start Scan
+              </button>
             </div>
-            <button onClick={onStartScanClick} className="bg-[#00D2FF] text-white px-4 py-2 rounded-lg">
-              Start Scan
-            </button>
-            <div className="flex items-center bg-[#20202c] px-4 py-1 rounded-full">
+            <div className="inline-flex items-center bg-[#20202c] px-4 py-1 rounded-full">
               <MdDateRange className="text-gray-200 mr-2" size={24} />
               <span className="text-sm text-gray-200">{dateRange}</span>
             </div>
           </div>
-          {isDataReady && (
-          <div className='flex justify-start'>
-          <div className="flex items-start mr-12 gap-5">
-            <div className="flex flex-col items-center gap-2">
-            <span className="text-sm text-gray-400 mb-1">Native Balance</span>
-              <span className="text-2xl text-blue-500 font-bold">${balances.nativeBalance}</span>
-            </div>
-            <Image src="/images/totaltx.png" width={100} height={50} alt="Total Tx" />
-          </div>
-          <div className="flex items-start mr-12 gap-5">
-            <div className="flex flex-col items-center gap-2">
-              <span className="text-sm text-gray-400 mb-1">Asset Balance</span>
-              <span className="text-2xl text-blue-500 font-bold">${balances.assetBalance}</span>
-            </div>
-            <Image src="/images/totaltx.png" width={100} height={50} alt="Total Tx" />
-          </div>
-          <div className="flex items-start mr-12 gap-5">
-            <div className="flex flex-col items-center gap-2">
-              <span className="text-sm text-gray-400 mb-1">Total at Risk</span>
-              <span className="text-2xl text-blue-500 font-bold">${balances.atRiskBalance}</span>
-            </div>
-            <Image src="/images/totaltx.png" width={100} height={50} alt="Total Tx" />
-          </div>
-          <div className="flex items-start mr-12 gap-5">
-            <div className="flex flex-col items-center gap-2">
-              <span className="text-sm text-gray-400 mb-1">Total Tx</span>
-              <span className="text-2xl text-blue-500 font-bold">{balances.totalTx}</span>
-            </div>
-            <Image src="/images/totaltx.png" width={100} height={50} alt="Total Tx" />
+          <div className='h-[450px] softBg p-5 rounded-lg flex justify-center items-center'>
+            <h2 className='mb-5 font-light regular-text text-center items-center text-2xl text-white'>Please Connect your wallet!</h2>
           </div>
         </div>
-        )}
-        {!isDataReady && <div>Loading or not connected...</div>}
+      );
+    }
+
+  return (
+      <>
+        <div className="flex flex-col gap-5 flex-[3] md:w-4/4 xl:w-5/5">
+          <div className='flex flex-col md:flex-row justify-between items-center mb-5 gap-4 md:gap-10'>
+            <h1 className="text-3xl md:text-5xl font-light regular-text text-white">Quick Scan</h1>
+            <div className="flex items-center gap-4 md:gap-12">
+              <img src="/images/logo.webp" alt="Guardian AI Logo" className="h-16 md:h-20" />
+              <w3m-button className="text-[#00D2FF]"></w3m-button>
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center gap-4 md:flex-row md:justify-start md:items-center">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 bg-[#20202c] p-2 rounded-lg">
+                <MdSearch size={20} className="text-[#8692A6]" />
+                <input type="text" placeholder="Scan by Address" className="bg-transparent border-none text-[#8692A6] placeholder-[#8692A6]" />
+              </div>
+              <button onClick={onStartScanClick} className="bg-[#00D2FF] text-white px-4 py-2 rounded-lg">
+                Start Scan
+              </button>
+            </div>
+            <div className="inline-flex items-center bg-[#20202c] px-4 py-1 rounded-full">
+              <MdDateRange className="text-gray-200 mr-2" size={24} />
+              <span className="text-sm text-gray-200">{dateRange}</span>
+            </div>
+          </div>
+
+          {isDataReady && (
+            <div className='flex flex-row flex-wrap justify-center md:justify-start gap-5'>
+              <div className="flex flex-row items-center gap-2">
+                <div className="flex flex-col items-center md:items-start">
+                  <span className="text-sm text-gray-400">Native Balance</span>
+                  <span className="text-2xl text-blue-500 font-bold">${balances.nativeBalance}</span>
+                </div>
+                <div className="hidden md:flex">
+                  <Image src="/images/totaltx.png" width={100} height={50} alt="Total Tx"/>
+                </div>
+              </div>
+              <div className="flex flex-row items-center gap-2">
+                <div className="flex flex-col items-center md:items-start">
+                  <span className="text-sm text-gray-400 mb-1">Asset Balance</span>
+                  <span className="text-2xl text-blue-500 font-bold">${balances.assetBalance}</span>
+                </div>
+                <div className="hidden md:flex">
+                  <Image src="/images/totaltx.png" width={100} height={50} alt="Total Tx" className="hidden md:block"/>
+                </div>
+              </div>
+              <div className="flex flex-row items-center gap-2">
+                <div className="flex flex-col items-center md:items-start">
+                  <span className="text-sm text-gray-400 mb-1">Total at Risk</span>
+                  <span className="text-2xl text-blue-500 font-bold">${balances.atRiskBalance}</span>
+                </div>  
+                <div className="hidden md:flex">
+                  <Image src="/images/totaltx.png" width={100} height={50} alt="Total Tx" className="hidden md:block"/>
+                </div>  
+              </div>
+              <div className="flex flex-row items-center gap-2">
+                <div className="flex flex-col items-center md:items-start">
+                  <span className="text-sm text-gray-400 mb-1">Total Tx</span>
+                  <span className="text-2xl text-blue-500 font-bold">{balances.totalTx}</span>
+                </div>  
+                <div className="hidden md:flex">
+                  <Image src="/images/totaltx.png" width={100} height={50} alt="Total Tx" className="hidden md:block"/>
+                </div>  
+              </div>
+            </div>
+          )}
+          {!isDataReady && <div>Loading Balance...</div>}
         <WalletOverview scanData={scanData} />
         <TransactionScan scanData={scanData} />
       </div>
