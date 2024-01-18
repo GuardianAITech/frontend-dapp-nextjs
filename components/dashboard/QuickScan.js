@@ -5,17 +5,67 @@ import WalletOverview from '@/components/dashboard/WalletOverview';
 import { MdSearch } from "react-icons/md";
 import Image from 'next/image';
 import { MdDateRange } from 'react-icons/md';
-import { useWeb3ModalAccount } from '@web3modal/ethers/react';
+import { useWeb3ModalAccount, useWeb3ModalEvents } from '@web3modal/ethers/react';
+
+const LoadingModal = ({ show }) => {
+  if (!show) return null;
+
+  return (
+      <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+          <div className="bg-[#1E1E2E] rounded-lg p-6 w-full max-w-md mx-auto text-center">
+              <div className="flex justify-center">
+                  <div className="border-gray-300 h-20 w-20 animate-spin rounded-full border-8 border-t-blue-600" />
+              </div>
+              <p className="mt-2 text-lg text-white">
+                  Loading Wallet Data...
+              </p>
+          </div>
+      </div>
+  );
+};
+
+const PercentageChangeIndicator = ({ change }) => {
+  const changeNum = Number(change);
+  const isPositive = changeNum > 0;
+  const changeStr = `${isPositive ? '+' : ''}${(changeNum * 100).toFixed(2)}%`;
+
+  const arrowStyle = {
+    display: 'inline-block',
+    width: '0',
+    height: '0',
+    borderLeft: '5px solid transparent',
+    borderRight: '5px solid transparent',
+    borderTop: isPositive ? '0' : '10px solid red',
+    borderBottom: isPositive ? '10px solid green' : '0', 
+  };
+
+  return (
+    <div className="flex items-center gap-2">
+      <div style={arrowStyle} />
+      <span className={`text-sm font-bold ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
+        {changeStr}
+      </span>
+    </div>
+  );
+};
+
+
+
 
 
 const QuickScan = () => {
     const { isConnected, address } = useWeb3ModalAccount();
+    const [inputaddress, setInputaddress] = useState('');
     const [isDataReady, setIsDataReady] = useState(false);
+    const [manualscan, setManualscan] = useState(false);
     const [scanData, setScanData] = useState(null);
     const [balances, setBalances] = useState({ nativeBalance: 0, assetBalance: 0, totalTx: 0 , atRiskBalance: 0});
-
+    
     const onStartScanClick = () => {
-      console.log('Start Scan clicked');
+      if (inputaddress) {
+        fetchData(inputaddress)
+        setManualscan(true)
+      }
     };
 
     const today = new Date();
@@ -29,39 +79,42 @@ const QuickScan = () => {
 
     const dateRange = `${formatDate(ninetyDaysAgo)} – ${formatDate(today)}`;
 
+    const fetchData = async (providedaddress) => {
+        setIsDataReady(false);
+        console.log("address:", providedaddress)
+          try {
+              const response = await fetch(`/api/scan?wallet=${providedaddress}`);
+              if (!response.ok) {
+                  throw new Error(`HTTP error! status: ${response.status}`);
+              }
+              const data = await response.json();
+              setScanData(data.scanData);
+              console.log("Data:", data.scanData)
+
+              if (data.scanData && data.scanData.token_balances && Array.isArray(data.scanData.token_balances)) {
+                  const etherBalanceInfo = data.scanData.token_balances.find(token => token.contract_ticker_symbol === 'ETH');
+                  const nativeBalance = etherBalanceInfo ? etherBalanceInfo.pretty_quote : 0;
+                  const tokenTotal = data.scanData.token_balances.find(token => token.total_asset_quote !== undefined);
+                  const assetBalance = tokenTotal ? tokenTotal.total_asset_quote : 0;
+                  const totalTx = data.scanData.total_transactions;
+                  const atRiskBalance = data.scanData.approvals.total_at_risk;
+                  setBalances({ nativeBalance, assetBalance, totalTx, atRiskBalance});
+              }
+              setIsDataReady(true);
+
+          } catch (error) {
+              console.error('API call error:', error);
+          }
+    };
+
     useEffect(() => {
-        const fetchData = async () => {
-            if (isConnected && address) {
-                try {
-                    const response = await fetch(`/api/scan?wallet=${address}`);
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    const data = await response.json();
-                    setScanData(data.scanData);
-                    console.log("Data:", data.scanData)
-
-                    if (data.scanData && data.scanData.token_balances && Array.isArray(data.scanData.token_balances)) {
-                        const etherBalanceInfo = data.scanData.token_balances.find(token => token.contract_ticker_symbol === 'ETH');
-                        const nativeBalance = etherBalanceInfo ? etherBalanceInfo.pretty_quote : 0;
-                        const tokenTotal = data.scanData.token_balances.find(token => token.total_asset_quote !== undefined);
-                        const assetBalance = tokenTotal ? tokenTotal.total_asset_quote : 0;
-                        const totalTx = data.scanData.total_transactions;
-                        const atRiskBalance = data.scanData.approvals.total_at_risk;
-                        setBalances({ nativeBalance, assetBalance, totalTx, atRiskBalance});
-                    }
-                    setIsDataReady(true);
-
-                } catch (error) {
-                    console.error('API call error:', error);
-                }
-            }
-        };
-
-        fetchData();
+      if (isConnected && address) {
+        fetchData(address);
+        setManualscan(false)
+      }
     }, [isConnected, address]);
 
-    if (!isConnected) {
+    if (!isConnected && !manualscan) {
       return (
         <div className="flex flex-col gap-5 flex-[3] md:w-4/4 xl:w-5/5">
           <div className='flex flex-col md:flex-row justify-between items-center mb-5 gap-4 md:gap-10'>
@@ -75,7 +128,13 @@ const QuickScan = () => {
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2 bg-[#20202c] p-2 rounded-lg">
                 <MdSearch size={20} className="text-[#8692A6]" />
-                <input type="text" placeholder="Scan by Address" className="bg-transparent border-none text-[#8692A6] placeholder-[#8692A6]" />
+                <input
+                  type="text"
+                  placeholder="Scan by Address"
+                  className="bg-transparent border-none text-[#8692A6] placeholder-[#8692A6]"
+                  value={inputaddress}
+                  onChange={(e) => setInputaddress(e.target.value)}
+                />
               </div>
               <button onClick={onStartScanClick} className="bg-[#00D2FF] text-white px-4 py-2 rounded-lg">
                 Start Scan
@@ -87,7 +146,7 @@ const QuickScan = () => {
             </div>
           </div>
           <div className='h-[450px] softBg p-5 rounded-lg flex justify-center items-center'>
-            <h2 className='mb-5 font-light regular-text text-center items-center text-2xl text-white'>Please Connect your wallet!</h2>
+            <h2 className='mb-5 font-light regular-text text-center items-center text-2xl text-white'>Please Connect your wallet or scan manually!</h2>
           </div>
         </div>
       );
@@ -108,7 +167,13 @@ const QuickScan = () => {
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2 bg-[#20202c] p-2 rounded-lg">
                 <MdSearch size={20} className="text-[#8692A6]" />
-                <input type="text" placeholder="Scan by Address" className="bg-transparent border-none text-[#8692A6] placeholder-[#8692A6]" />
+                <input
+                  type="text"
+                  placeholder="Scan by Address"
+                  className="bg-transparent border-none text-[#8692A6] placeholder-[#8692A6]"
+                  value={inputaddress}
+                  onChange={(e) => setInputaddress(e.target.value)}
+                />
               </div>
               <button onClick={onStartScanClick} className="bg-[#00D2FF] text-white px-4 py-2 rounded-lg">
                 Start Scan
@@ -121,6 +186,7 @@ const QuickScan = () => {
           </div>
 
           {isDataReady && (
+            <>
             <div className='flex flex-row flex-wrap justify-center md:justify-start gap-5'>
               <div className="flex flex-row items-center gap-2">
                 <div className="flex flex-col items-center md:items-start">
@@ -128,7 +194,7 @@ const QuickScan = () => {
                   <span className="text-2xl text-blue-500 font-bold">${balances.nativeBalance}</span>
                 </div>
                 <div className="hidden md:flex">
-                  <Image src="/images/totaltx.png" width={100} height={50} alt="Total Tx"/>
+                  <PercentageChangeIndicator change={scanData.calculations?.last_scan_changes?.last_total_native_value?.percentage_change ?? 0} />
                 </div>
               </div>
               <div className="flex flex-row items-center gap-2">
@@ -137,7 +203,7 @@ const QuickScan = () => {
                   <span className="text-2xl text-blue-500 font-bold">${balances.assetBalance}</span>
                 </div>
                 <div className="hidden md:flex">
-                  <Image src="/images/totaltx.png" width={100} height={50} alt="Total Tx" className="hidden md:block"/>
+                  <PercentageChangeIndicator change={scanData.calculations?.last_scan_changes?.last_total_assets_value?.percentage_change ?? 0} />
                 </div>
               </div>
               <div className="flex flex-row items-center gap-2">
@@ -146,7 +212,7 @@ const QuickScan = () => {
                   <span className="text-2xl text-blue-500 font-bold">${balances.atRiskBalance}</span>
                 </div>  
                 <div className="hidden md:flex">
-                  <Image src="/images/totaltx.png" width={100} height={50} alt="Total Tx" className="hidden md:block"/>
+                  <PercentageChangeIndicator change={scanData?.calculations?.last_scan_changes?.last_total_at_risk?.percentage_change ?? 0} />
                 </div>  
               </div>
               <div className="flex flex-row items-center gap-2">
@@ -155,18 +221,19 @@ const QuickScan = () => {
                   <span className="text-2xl text-blue-500 font-bold">{balances.totalTx}</span>
                 </div>  
                 <div className="hidden md:flex">
-                  <Image src="/images/totaltx.png" width={100} height={50} alt="Total Tx" className="hidden md:block"/>
+                   <PercentageChangeIndicator change={scanData.calculations?.last_scan_changes?.last_total_transactions?.percentage_change} />
                 </div>  
               </div>
             </div>
+            <WalletOverview scanData={scanData} />
+            <TransactionScan scanData={scanData} />
+            </>
           )}
-          {!isDataReady && <div>Loading Balance...</div>}
-        <WalletOverview scanData={scanData} />
-        <TransactionScan scanData={scanData} />
+          <LoadingModal show={!isDataReady} />
+
       </div>
     </>
   );
-
 }
 
 export default QuickScan
