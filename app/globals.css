@@ -4,21 +4,21 @@
 
 @font-face {
   font-family: 'Newakefont';
-  src: url('/fonts/NEWAKEFONT-DEMO.otf') format('opentype');
+  src: url('/fonts/NEWAKEFONTDEMO.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'GilroyMedium';
-  src: url('/fonts/GILROY-MEDIUM.ttf') format('truetype');
+  src: url('/fonts/gilroymedium.ttf') format('truetype');
   font-weight: 400; 
   font-style: normal;
 }
 
 @font-face {
   font-family: 'GilroyBold';
-  src: url('/fonts/GILROY-BOLD.ttf') format('truetype');
+  src: url('/fonts/gilroybold.ttf') format('truetype');
   font-weight: bold;
   font-style: normal;
 }

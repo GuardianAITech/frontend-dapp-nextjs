@@ -44,7 +44,12 @@ const TransactionScan = ({ scanData }) => {
                 className="hover:text-blue-300"
                 title={tx.to_address}
               >
-                {isMobile ? `${tx.to_address.substring(0, 1)}...${tx.to_address.substring(tx.to_address.length - 4)}` : `${tx.to_address.substring(0, 10)}...${tx.to_address.substring(tx.to_address.length - 10)}`}
+                {
+                  isMobile 
+                  ? (tx.to_address ? `${tx.to_address.substring(0, 1)}...${tx.to_address.substring(tx.to_address.length - 4)}` : "None")
+                  : (tx.to_address ? `${tx.to_address.substring(0, 10)}...${tx.to_address.substring(tx.to_address.length - 10)}` : "None")
+                }
+
               </a>
             </div>
             <div className="col-span-3 flex items-center justify-center">

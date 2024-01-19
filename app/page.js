@@ -1,4 +1,9 @@
-import QuickScan from "@/components/dashboard/QuickScan";
+import dynamic from 'next/dynamic';
+
+const QuickScan = dynamic(() => import('@/components/dashboard/QuickScan'), {
+  loading: () => <p>Loading...</p>,
+  ssr: true 
+});
 
 
 export default function Home() {
