@@ -1,5 +1,5 @@
 import React from 'react'
-import ApprovalOverview from '@/components/dashboard/Approval';
+import ApprovalOverview from '@/components/dashboard/approval/Approval';
 
 
 const page = async () => {

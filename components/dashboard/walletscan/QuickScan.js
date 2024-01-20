@@ -1,28 +1,15 @@
 "use client"
 import React, { useState, useEffect } from 'react';
-import TransactionScan from '@/components/dashboard/TransactionScan';
-import WalletOverview from '@/components/dashboard/WalletOverview';
+import TransactionScan from '@/components/dashboard/walletscan/TransactionScan';
+import WalletOverview from '@/components/dashboard/walletscan/WalletOverview';
 import { MdSearch } from "react-icons/md";
 import Image from 'next/image';
 import { MdDateRange } from 'react-icons/md';
 import { useWeb3ModalAccount, useWeb3ModalEvents } from '@web3modal/ethers/react';
+import { WalletLoadingModal } from '../modal/modals'
+import { ErrorModal } from '../modal/modals';
 
-const LoadingModal = ({ show }) => {
-  if (!show) return null;
 
-  return (
-      <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-          <div className="bg-[#1E1E2E] rounded-lg p-6 w-full max-w-md mx-auto text-center">
-              <div className="flex justify-center">
-                  <div className="border-gray-300 h-20 w-20 animate-spin rounded-full border-8 border-t-blue-600" />
-              </div>
-              <p className="mt-2 text-lg text-white">
-                  Loading Wallet Data...
-              </p>
-          </div>
-      </div>
-  );
-};
 
 const PercentageChangeIndicator = ({ change }) => {
   const changeNum = Number(change);
@@ -50,9 +37,6 @@ const PercentageChangeIndicator = ({ change }) => {
 };
 
 
-
-
-
 const QuickScan = () => {
     const { isConnected, address } = useWeb3ModalAccount();
     const [inputaddress, setInputaddress] = useState('');
@@ -60,6 +44,7 @@ const QuickScan = () => {
     const [manualscan, setManualscan] = useState(false);
     const [scanData, setScanData] = useState(null);
     const [balances, setBalances] = useState({ nativeBalance: 0, assetBalance: 0, totalTx: 0 , atRiskBalance: 0});
+    const [showErrorModal, setShowErrorModal] = useState(false);
     
     const onStartScanClick = () => {
       if (inputaddress) {
@@ -81,7 +66,6 @@ const QuickScan = () => {
 
     const fetchData = async (providedaddress) => {
         setIsDataReady(false);
-        console.log("address:", providedaddress)
           try {
               const response = await fetch(`/api/scan?wallet=${providedaddress}`);
               if (!response.ok) {
@@ -89,7 +73,6 @@ const QuickScan = () => {
               }
               const data = await response.json();
               setScanData(data.scanData);
-              console.log("Data:", data.scanData)
 
               if (data.scanData && data.scanData.token_balances && Array.isArray(data.scanData.token_balances)) {
                   const etherBalanceInfo = data.scanData.token_balances.find(token => token.contract_ticker_symbol === 'ETH');
@@ -104,6 +87,7 @@ const QuickScan = () => {
 
           } catch (error) {
               console.error('API call error:', error);
+              setShowErrorModal(true);
           }
     };
 
@@ -229,8 +213,8 @@ const QuickScan = () => {
             <TransactionScan scanData={scanData} />
             </>
           )}
-          <LoadingModal show={!isDataReady} />
-
+          <WalletLoadingModal show={!isDataReady} />
+          <ErrorModal show={showErrorModal} onClose={() => setShowErrorModal(false)} />
       </div>
     </>
   );

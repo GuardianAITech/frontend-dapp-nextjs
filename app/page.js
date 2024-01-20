@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
 
-const QuickScan = dynamic(() => import('@/components/dashboard/QuickScan'), {
+const QuickScan = dynamic(() => import('@/components/dashboard/walletscan/QuickScan'), {
   loading: () => <p>Loading...</p>,
   ssr: true 
 });
