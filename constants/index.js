@@ -13,8 +13,8 @@ import { FaRegCheckCircle, FaRegChartBar, FaRegListAlt } from "react-icons/fa";
         icon: <FaRegCheckCircle />,
     },
     {
-        title: "Monitoring",
-        path: "/",
+        title: "Latest Exploits and Hacks",
+        path: "/newsfeed",
         icon: <FaRegChartBar />,
     },
     {
