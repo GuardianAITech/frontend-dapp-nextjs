@@ -9,8 +9,8 @@ const WalletOverview = ({ scanData }) => {
   const firstTransaction = scanData?.first_transaction?.[0];
   const firstTransactionDate = firstTransaction ? new Date(firstTransaction.block_signed_at).toLocaleDateString() : 'N/A';
   const lastActivityDate = scanData?.last_activity?.sentence || 'N/A';
-  const safetyScore = parseFloat(scanData?.ai?.safety_score).toFixed(2) || 'N/A'
-  const safetySummary = scanData?.ai?.summary || 'No Data Available'
+  const safetyScore = parseFloat(scanData?.ai?.safety_score).toFixed(2) || '0'
+  const safetySummary = scanData?.ai?.summary || 'Safety Score not calculated!'
 
   const DataBox = ({ IconComponent, label, data }) => (
     <div className="flex flex-col items-center justify-center gap-4 p-4 border border-gray-200 bg-gray-800 text-center rounded-lg shadow-lg w-full h-auto">

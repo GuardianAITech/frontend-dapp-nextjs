@@ -76,11 +76,11 @@ const QuickScan = () => {
 
               if (data.scanData && data.scanData.token_balances && Array.isArray(data.scanData.token_balances)) {
                   const etherBalanceInfo = data.scanData.token_balances.find(token => token.contract_ticker_symbol === 'ETH');
-                  const nativeBalance = etherBalanceInfo ? etherBalanceInfo.pretty_quote : 0;
+                  const nativeBalance = etherBalanceInfo ? parseFloat(etherBalanceInfo.pretty_quote).toFixed(2) : 0;
                   const tokenTotal = data.scanData.token_balances.find(token => token.total_asset_quote !== undefined);
-                  const assetBalance = tokenTotal ? tokenTotal.total_asset_quote : 0;
+                  const assetBalance = tokenTotal ? parseFloat(tokenTotal.total_asset_quote).toFixed(2) : 0;
                   const totalTx = data.scanData.total_transactions;
-                  const atRiskBalance = data.scanData.approvals.total_at_risk;
+                  const atRiskBalance = parseFloat(data.scanData.approvals.total_at_risk).toFixed(2);
                   setBalances({ nativeBalance, assetBalance, totalTx, atRiskBalance});
               }
               setIsDataReady(true);
