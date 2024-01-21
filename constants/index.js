@@ -1,5 +1,5 @@
 import { MdDashboard } from "react-icons/md";
-import { FaRegCheckCircle, FaRegChartBar, FaRegListAlt } from "react-icons/fa";
+import { FaRegCheckCircle, FaRegChartBar, FaRegListAlt, FaShieldAlt } from "react-icons/fa";
 
   export const menuItems = [
     {
@@ -13,14 +13,19 @@ import { FaRegCheckCircle, FaRegChartBar, FaRegListAlt } from "react-icons/fa";
         icon: <FaRegCheckCircle />,
     },
     {
-        title: "Latest Exploits and Hacks",
-        path: "/newsfeed",
+        title: "Monitor",
+        path: "/",
         icon: <FaRegChartBar />,
     },
     {
         title: "Reports",
         path: "/",
         icon: <FaRegListAlt />,
+    },
+    {
+        title: "Latest Exploits and Hacks",
+        path: "/newsfeed",
+        icon: <FaShieldAlt />,
     },
 ];
 
