@@ -13,14 +13,14 @@ import { FaRegCheckCircle, FaRegChartBar, FaRegListAlt, FaShieldAlt } from "reac
         icon: <FaRegCheckCircle />,
     },
     {
+        title: "Contract Scanner",
+        path: "/cascanner",
+        icon: <FaRegListAlt />,
+    },
+    {
         title: "Monitor",
         path: "/",
         icon: <FaRegChartBar />,
-    },
-    {
-        title: "Reports",
-        path: "/",
-        icon: <FaRegListAlt />,
     },
     {
         title: "Latest Exploits and Hacks",

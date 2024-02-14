@@ -81,4 +81,21 @@ const WalletLoadingModal = ({ show }) => {
     );
 };
 
-export { ErrorModal, ApprovalLoading, WalletLoadingModal, RevokeSuccessModal };
+const CAScanLoadingModal = ({ show }) => {
+    if (!show) return null;
+  
+    return (
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+            <div className="bg-[#1E1E2E] rounded-lg p-6 w-full max-w-md mx-auto text-center">
+                <div className="flex justify-center">
+                    <div className="border-gray-300 h-20 w-20 animate-spin rounded-full border-8 border-t-blue-600" />
+                </div>
+                <p className="mt-2 text-lg text-white">
+                    Loading Contract Data...
+                </p>
+            </div>
+        </div>
+    );
+};
+
+export { ErrorModal, ApprovalLoading, WalletLoadingModal, RevokeSuccessModal , CAScanLoadingModal};
