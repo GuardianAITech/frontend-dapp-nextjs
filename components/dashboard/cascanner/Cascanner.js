@@ -32,25 +32,52 @@ const CaScanner = () => {
         }
     };
 
-  const renderSummary = () => {
-      if (Array.isArray(contractData.summary)) {
-          return (
+    const renderSummary = () => {
+        if (contractData.summary) {
+          if (Array.isArray(contractData.summary)) {
+            return (
               <>
-                  <h2 className='text-2xl font-semibold text-white mb-2'>Safety Score: {contractData.summary[0].safety_score}</h2>
-                  <h3 className='text-lg font-semibold text-white mb-4'>Summary</h3>
-                  <p className='text-center text-white mb-4'>{contractData.summary[0].text}</p>
+                <h2 className='text-2xl font-semibold text-white mb-2'>Safety Score: {contractData.summary[0].safety_score || "N/A"}</h2>
+                <h3 className='text-lg font-semibold text-white mb-4'>Summary</h3>
+                <p className='text-center text-white mb-4'>{contractData.summary[0].text || "No summary available."}</p>
               </>
-          );
-      } else {
-          return (
+            );
+          } else {
+            return (
               <>
-                  <h2 className='text-2xl font-semibold text-white mb-2'>Safety Score: {contractData.summary.safety_score}</h2>
-                  <h3 className='text-lg font-semibold text-white mb-4'>Summary</h3>
-                  <p className='text-center text-white mb-4'>{contractData.summary.text}</p>
+                <h2 className='text-2xl font-semibold text-white mb-2'>Safety Score: {contractData.summary.safety_score || "N/A"}</h2>
+                <h3 className='text-lg font-semibold text-white mb-4'>Summary</h3>
+                <p className='text-center text-white mb-4'>{contractData.summary.text || "No summary available."}</p>
               </>
+            );
+          }
+        } else {
+          return (
+            <>
+              <h2 className='text-2xl font-semibold text-white mb-2'>Safety Score: N/A</h2>
+              <h3 className='text-lg font-semibold text-white mb-4'>Summary</h3>
+              <p className='text-center text-white mb-4'>No summary available.</p>
+            </>
           );
-      }
-  };
+        }
+      };
+
+      const renderFunctions = () => {
+        if (contractData.functions && contractData.functions.length > 0) {
+          return contractData.functions.map((func, index) => (
+            <div key={index} className="bg-[#20202c] p-4 rounded-lg mb-3 text-center">
+              <h4 className="text-xl font-semibold text-[#00D2FF]">{func.name}</h4>
+              <p className="text-white">{func.explanation}</p>
+            </div>
+          ));
+        } else {
+          return (
+            <div className="text-white text-center">
+              No functions could be read.
+            </div>
+          );
+        }
+      };
 
     return (
         <>
@@ -83,12 +110,7 @@ const CaScanner = () => {
                     <div className='flex flex-col items-center p-5 rounded-lg'>
                         {renderSummary()}
                         <div className='w-full'>
-                            {contractData.functions.map((func, index) => (
-                                <div key={index} className="bg-[#20202c] p-4 rounded-lg mb-3 text-center">
-                                    <h4 className="text-xl font-semibold text-[#00D2FF]">{func.name}</h4>
-                                    <p className="text-white">{func.explanation}</p>
-                                </div>
-                            ))}
+                            {renderFunctions()}
                         </div>
                     </div>
                 ) : (
